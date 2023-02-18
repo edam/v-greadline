@@ -2,12 +2,8 @@
 // Use of this file is permitted under the terms of the GNU General Public
 // Licence, version 3 or later, which can be found in the LICENCE file.
 
-module gnu_readline
+module greadline
 
-// This V module is a shim, wrapping GNU Readline.  Please see the GNU project
-// documentation for readline for more information about the API:
-// https://tiswww.case.edu/php/chet/readline/readline.html
-//
 import math
 
 // Binding keys

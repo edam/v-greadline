@@ -2,7 +2,7 @@
 // Use of this file is permitted under the terms of the GNU General Public
 // Licence, version 3 or later, which can be found in the LICENCE file.
 
-module gnu_readline
+module greadline
 
 import os
 

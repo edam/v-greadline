@@ -1,6 +1,6 @@
 tmp.history
 *.dSYM
-readline_test
+greadline_test
 
 ; editor crap
 *#

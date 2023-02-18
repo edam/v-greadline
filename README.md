@@ -1,4 +1,4 @@
-gnu_readline
+greadline
 ============
 
 A module for the [V programming language] which facilitates the use of the
@@ -12,22 +12,22 @@ Installation
 ------------
 
 ``` Shell
-$ v install edam.gnu_readline
+$ v install edam.greadline
 ```
 
 Usage
 =====
 
 ``` V
-import gnu_readline
+import greadline
 
 fn main() {
-	text := gnu_readline.readline('Enter text> ') or { return }
+	text := greadline.readline('Enter text> ') or { return }
 	println("You typed: ${text}")
 }
 ```
 
-You can use `gnu_readline.read_init_file(filename)` to initlaise the library.
+You can use `greadline.read_init_file(filename)` to initlaise the library.
 
 History File
 ------------
@@ -36,9 +36,9 @@ To add history, simply load the file and it will set the filename for subsequent
 calls:
 
 ``` V
-gnu_readline.history_file_read(filename)!
+greadline.history_file_read(filename)!
 defer {
-    gnu_readline.history_file_write() or {}
+    greadline.history_file_write() or {}
 }
 ```
 
@@ -52,7 +52,7 @@ immediately truncates the history file and affects subsequent calls to
 `history_file_write()` and `history_file_append()`.
 
 ``` V
-gnu_readline.set_history_file_limit(1000)!
+greadline.set_history_file_limit(1000)!
 ```
 
 Completion
