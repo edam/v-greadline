@@ -1,0 +1,7 @@
+tmp.history
+*.dSYM
+readline_test
+
+; editor crap
+*#
+*~
