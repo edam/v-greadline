@@ -1,4 +1,7 @@
-[translated]
+// Copyright (c) 2023 Tim Marston <tim@ed.am>.  All rights reserved.
+// Use of this file is permitted under the terms of the GNU General Public
+// Licence, version 3 or later, which can be found in the LICENCE file.
+
 module gnu_readline
 
 #flag darwin -I/usr/local/opt/readline/include

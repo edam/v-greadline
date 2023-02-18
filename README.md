@@ -22,27 +22,27 @@ Usage
 import gnu_readline
 
 fn main() {
-	text := gnu_readline.readline('Enter text> ')
+	text := gnu_readline.readline('Enter text> ') or { return }
 	println("You typed: ${text}")
 }
 ```
 
 You can use `gnu_readline.read_init_file(filename)` to initlaise the library.
 
-History file
+History File
 ------------
 
 To add history, simply load the file and it will set the filename for subsequent
 calls:
 
 ``` V
-    gnu_readline.history_file_read(history_filename)!
-    defer {
-         gnu_readline.history_file_write() or {}
-    }
+gnu_readline.history_file_read(filename)!
+defer {
+    gnu_readline.history_file_write() or {}
+}
 ```
 
-Defer writing of the history file for program termination as well.
+Defer writing the history file until program termination as well.
 
 Note: it is not an error for `history_file_read()` to be given a filename that
 does not exist.  You should use `os.exists()` to discover that.
@@ -52,7 +52,7 @@ immediately truncates the history file and affects subsequent calls to
 `history_file_write()` and `history_file_append()`.
 
 ``` V
-    gnu_readline.set_history_file_limit(1000)
+gnu_readline.set_history_file_limit(1000)!
 ```
 
 Completion
@@ -67,6 +67,14 @@ For differnt prompts, you may want different histories and completion rules.
 
 TODO
 
+Development
+===========
+
+Testing the module
+
+``` shell
+$ v test .
+```
 
 Licence
 -------

@@ -1,3 +1,7 @@
+// Copyright (c) 2023 Tim Marston <tim@ed.am>.  All rights reserved.
+// Use of this file is permitted under the terms of the GNU General Public
+// Licence, version 3 or later, which can be found in the LICENCE file.
+
 module gnu_readline
 
 import os
@@ -17,20 +21,20 @@ fn test_errno() {
 	mut ok := true
 
 	// error for non-existent rc file
-	read_init_file(gnu_readline.bad_file) or { ok = false }
+	read_init_file(bad_file) or { ok = false }
 	assert !ok
 
 	// no error for non-existent history
-	history_file_read(gnu_readline.bad_file) or { assert false }
+	history_file_read(bad_file) or { assert false }
 
 	// error reading dir
 	ok = true
-	history_file_read(gnu_readline.dir_file) or { ok = false }
+	history_file_read(dir_file) or { ok = false }
 	assert !ok
 }
 
 fn test_read_history() {
-	history_file_read(gnu_readline.good_file) or { assert false }
+	history_file_read(good_file) or { assert false }
 	assert history_length() == 3
 	assert history_get(1) or { '' } == 'test line 1'
 	assert history_get(0) or { '' } == ''
@@ -42,19 +46,19 @@ fn test_read_history() {
 }
 
 fn check_hist_file(expected int, last string) ! {
-	assert os.exists(gnu_readline.tmp_file)
-	lines := os.read_lines(gnu_readline.tmp_file)!
+	assert os.exists(tmp_file)
+	lines := os.read_lines(tmp_file)!
 	assert lines.len == expected
 	assert lines.last() == last
 }
 
 fn test_write_history() {
-	os.rm(gnu_readline.tmp_file) or {}
-	assert !os.exists(gnu_readline.tmp_file)
+	os.rm(tmp_file) or {}
+	assert !os.exists(tmp_file)
 	defer {
-		os.rm(gnu_readline.tmp_file) or { assert false }
+		os.rm(tmp_file) or { assert false }
 	}
-	history_file_read(gnu_readline.tmp_file) or { assert false }
+	history_file_read(tmp_file) or { assert false }
 	history_append('test line 1')
 	history_append('test line 2')
 	history_append('test line 3')
