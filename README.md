@@ -27,7 +27,10 @@ fn main() {
 }
 ```
 
-You can use `greadline.read_init_file(filename)` to initlaise the library.
+GNU readline will initialise with the user's readline init file anyway.  But you
+can also use `greadline.read_init_file(filename)` to read your own readline init
+file, or pass your own init file lines, one at a time, for a more custom
+configuration, with `greadline.parse_and_bind(line)`.
 
 History File
 ------------
@@ -62,7 +65,7 @@ TODO
 Multiple Prompts
 ----------------
 
-For differnt prompts, you may want different histories and completion rules.
+For different prompts, you may want different histories and completion rules.
 
 TODO
 
