@@ -40,13 +40,21 @@ pub fn readline(prompt string) ?string {
 	return str
 }
 
-// Returns the line gathered so far.
-pub fn line_buffer() string {
-	return unsafe { cstring_to_vstring(&char(C.rl_line_buffer)) }
+// Stop any ongoing readline() and return line buffer immediately.
+pub fn readline_cancel() {
+	C.rl_done = 1
 }
 
-// Replace the contents of the line buffer. The point and mark are preserved, if
-// possible.
+// Returns the line gathered so far.
+pub fn line_buffer() string {
+	lb := &char(C.rl_line_buffer)
+	unsafe {
+		return if lb == nil { '' } else { cstring_to_vstring(lb) }
+	}
+}
+
+// Replace the contents of the line buffer.  The point and mark are preserved,
+// if possible.
 pub fn set_line_buffer(line string) {
 	C.rl_replace_line(line.str, 0)
 }
