@@ -6,7 +6,7 @@ A module for the [V programming language] which facilitates the use of the
 based on the Python GNU readline interface, although the functions in this
 module are named more clearly.)
 
-Version 0.1
+Version 0.2
 
 Installation
 ------------
