@@ -177,10 +177,10 @@ pub fn history_length() int {
 	return C.history_length
 }
 
-// Return the history entry at position idx, where 0 < idx < history_length().
+// Return the history entry at position idx, where 0 <= idx < history_length().
 // Returns an error if the idx is invalid.
 pub fn history_get(idx int) !string {
-	entry := C.history_get(idx)
+	entry := C.history_get(idx + 1) // api is 1-based here (but not later!)
 	check_ptr(entry)!
 	return unsafe { cstring_to_vstring(entry.line) }
 }
