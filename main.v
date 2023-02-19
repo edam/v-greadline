@@ -57,6 +57,45 @@ pub fn insert_text(text string) int {
 	return C.rl_insert_text(text.str)
 }
 
+// Delete range of chars in the input buffer, from start pos to (but not
+// including) end pos.  Returns the number of chars deleted.
+pub fn delete_text(start int, end int) int {
+	start_ := math.max(0, math.min(C.rl_end, start))
+	end_ := math.max(0, math.min(C.rl_end, end))
+	return C.rl_delete_text(start_, end_)
+}
+
+// Get line buffer length.
+pub fn length() int {
+	return C.rl_end
+}
+
+// Get point cursor position.
+pub fn point() int {
+	return C.rl_point
+}
+
+// Set point (cursor) position.
+pub fn set_point(pos int) {
+	C.rl_point = math.max(0, math.min(C.rl_end, pos))
+}
+
+//// Get mark position.  If set, the text between point and mark is a selection.
+// pub fn mark() ?int {
+//    return if C.rl_mark_active_p() != 0 { C.rl_mark } else { none }
+//}
+
+//// Set mark position, and therefore set a text selection.
+// pub fn set_mark(pos int) {
+//    C.rl_mark = math.max(0, math.min( C.rl_end, pos ))
+//    C.rl_activate_mark()
+//}
+
+//// Unset mark, and therefore unselect any selected text.
+// pub fn clear_mark() {
+//    C.rl_deactivate_mark()
+//}
+
 // History File Management
 
 // Add the contents of filename to the history list, a line at a time.  The

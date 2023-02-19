@@ -16,7 +16,11 @@ fn C.rl_parse_and_bind(line &char) int
 fn C.rl_read_init_file(filename &char) int
 fn C.rl_replace_line(text &char, clear_undo int)
 fn C.rl_insert_text(text &char) int
+fn C.rl_delete_text(start int, end int) int
 fn C.rl_clear_history()
+// fn C.rl_mark_active_p() int
+// fn C.rl_activate_mark()
+// fn C.rl_deactivate_mark()
 
 #include <readline/history.h>
 

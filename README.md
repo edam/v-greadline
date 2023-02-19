@@ -32,8 +32,9 @@ You can use `greadline.read_init_file(filename)` to initlaise the library.
 History File
 ------------
 
-To add history, simply load the file and it will set the filename for subsequent
-calls:
+To add history, simply load the file and that will set the filename used in
+subsequent calls, such as writing history, which you will want to defer to
+happen at program termination:
 
 ``` V
 greadline.history_file_read(filename)!
@@ -42,14 +43,12 @@ defer {
 }
 ```
 
-Defer writing the history file until program termination as well.
-
-Note: it is not an error for `history_file_read()` to be given a filename that
+Note: it is not an error when `history_file_read()` is given a filename that
 does not exist.  You should use `os.exists()` to discover that.
 
-You may also want to limit the size of the history file.  Introducing a limit
-immediately truncates the history file and affects subsequent calls to
-`history_file_write()` and `history_file_append()`.
+You can set a sensible limit on the size of the history file.  This will
+immediately truncate the history file (if it exceeds the limit) and will affect
+subsequent calls to `history_file_write()` and `history_file_append()`:
 
 ``` V
 greadline.set_history_file_limit(1000)!
@@ -66,6 +65,28 @@ Multiple Prompts
 For differnt prompts, you may want different histories and completion rules.
 
 TODO
+
+Manipulating Line Buffer
+------------------------
+
+While readline is taking input, you can manipulate the process from another
+thread.
+
+``` V
+old_pos := point()      // get current cursor position
+set_point(5)            // set cursor position
+insert_text("hi")       // insert text at cursor
+set_point(old_pos)      // restore cursor position
+delete_text(0, 3)       // delete the first 3 chars!
+```
+
+You can also modify/delete text by reading/write the input line buffer directly.
+
+``` V
+line := line_buffer()   // get the input line
+ul := line.to_upper()
+set_line_buffer(ul)     // set the new input line
+```
 
 Development
 ===========
