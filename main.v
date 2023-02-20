@@ -33,7 +33,7 @@ pub fn readline(prompt string) ?string {
 	str := unsafe { ret.vstring() } // manage cstring (i.e., we should free() it)
 	if str.len > 0 {
 		state := unsafe { global_state() }
-		if state.autoadd {
+		if state.auto_add {
 			history_append(str)
 		}
 	}
@@ -114,7 +114,7 @@ pub fn history_file_read(filename string) ! {
 	ret := C.read_history(filename.str)
 	check_errno(ret, false)!
 	mut state := unsafe { global_state() }
-	state.hfname = filename
+	state.hf_name = filename
 }
 
 // Write the current history to filename, overwriting filename if necessary.
@@ -125,16 +125,16 @@ pub fn history_file_write() ! {
 // Append the last nelements of the history list to filename.
 pub fn history_file_append(nelements int) ! {
 	state := unsafe { global_state() }
-	if state.hfname.len == 0 {
+	if state.hf_name.len == 0 {
 		return error('no history file')
-	} else if state.hflimit >= 0 {
-		retain := math.max(0, state.hflimit - C.history_length)
-		append := math.min(C.history_length, state.hflimit)
+	} else if state.hf_limit >= 0 {
+		retain := math.max(0, state.hf_limit - C.history_length)
+		append := math.min(C.history_length, state.hf_limit)
 		apply_file_limit(retain)!
-		ret := C.append_history(append, state.hfname.str)
+		ret := C.append_history(append, state.hf_name.str)
 		check_errno(ret, true)!
 	} else {
-		ret := C.write_history(state.hfname.str)
+		ret := C.write_history(state.hf_name.str)
 		check_errno(ret, true)!
 	}
 }
@@ -142,7 +142,7 @@ pub fn history_file_append(nelements int) ! {
 // Get the limit on the history file length imposed on write_history().
 pub fn history_file_limit() ?int {
 	state := unsafe { global_state() }
-	return if state.hflimit >= 0 { state.hflimit } else { none }
+	return if state.hf_limit >= 0 { state.hf_limit } else { none }
 }
 
 // Set the length (in lines) of the history file and truncate immediately (as
@@ -150,19 +150,19 @@ pub fn history_file_limit() ?int {
 pub fn set_history_file_limit(length int) ! {
 	length_ := math.max(0, length)
 	mut state := unsafe { global_state() }
-	if state.hflimit == -1 || state.hflimit > length_ {
-		if state.hfname.len > 0 {
+	if state.hf_limit == -1 || state.hf_limit > length_ {
+		if state.hf_name.len > 0 {
 			apply_file_limit(length_)!
 		}
 	}
-	state.hflimit = length
+	state.hf_limit = length
 }
 
 // Turn off limiting of the history file size.  This affects history_file_write()
 // and history_file_append().
 pub fn clear_history_file_limit() {
 	mut state := unsafe { global_state() }
-	state.hflimit = -1
+	state.hf_limit = -1
 }
 
 // In-memory History Management
@@ -208,5 +208,31 @@ pub fn history_append(line string) {
 // history.  Auto-add is enabled by default.
 pub fn set_history_autoadd(enable bool) {
 	mut state := unsafe { global_state() }
-	state.autoadd = enable
+	state.auto_add = enable
+}
+
+// Completion
+
+type CompletionFn = fn (word string) []string
+
+// Set the completion function.  This will be called to complete the word at or
+// before point, which is passed to it.  It returns a list of all possible
+// completions.
+pub fn set_completion_fn(comp_fn CompletionFn) {
+	mut state := unsafe { global_state() }
+	state.comp_fn = comp_fn
+	enable_completion_handler(true)
+}
+
+// Set default completion.  Readline completes words at or before point as
+// though they are filename by default.
+pub fn set_completion_default() {
+	enable_completion_handler(false)
+}
+
+// Turn off completion altogether.
+pub fn set_completion_off() {
+	mut state := unsafe { global_state() }
+	state.comp_fn = unsafe { nil }
+	enable_completion_handler(true)
 }

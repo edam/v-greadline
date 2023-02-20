@@ -8,9 +8,11 @@ import os
 
 struct GlobalState {
 mut:
-	autoadd bool = true // auto-add enabled
-	hflimit int  = -1 // history file limit
-	hfname  string
+	auto_add bool = true // auto-add enabled
+	hf_limit int  = -1 // history file limit
+	hf_name  string       // history file name
+	comp_fn  CompletionFn = unsafe { nil } // completion function
+	comp_res []string     // completion results
 }
 
 [unsafe]
@@ -47,6 +49,38 @@ fn check_errno(errno_ int, must_exist bool) ! {
 
 fn apply_file_limit(length int) ! {
 	state := unsafe { global_state() }
-	ret := C.history_truncate_file(state.hfname.str, length)
+	ret := C.history_truncate_file(state.hf_name.str, length)
 	check_errno(ret, false)!
+}
+
+fn completion_handler(word &char, next int) &char {
+	mut state := unsafe { global_state() }
+	if next == 0 {
+		state.comp_res.clear()
+		if state.comp_fn != unsafe { nil } {
+			state.comp_res << state.comp_fn(unsafe { cstring_to_vstring(word) })
+			state.comp_res.reverse_in_place()
+		}
+	}
+	if state.comp_res.len > 0 {
+		res := state.comp_res.pop()
+		ptr := unsafe { C.malloc(res.len + 1) } // use C malloc because...
+		unsafe { vmemcpy(ptr, res.str, res.len + 1) } // include zero-terminator
+		return ptr // ...GNU readline will free() memory
+	} else {
+		return C.NULL
+	}
+}
+
+//type CompHandlerFn = fn (_ &char, _ int) &&char
+
+fn enable_completion_handler(enable bool) {
+	// TODO: assign to &&CompHandlerFn, not a &&char (this doesn't seem to work
+	// at the moment--it complains that *cvarptr can't be assigned to...)
+	// mut cvarptr := unsafe{ &&CompHandlerFn(&C.rl_completion_entry_function) }
+	// unsafe { *cvarptr = &CompHandlerFn(&completion_handler) }
+	mut cvarptr := unsafe { &&char(&C.rl_completion_entry_function) }
+	unsafe {
+		*cvarptr = if enable { &char(&completion_handler) } else { C.NULL }
+	}
 }

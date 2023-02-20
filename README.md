@@ -37,7 +37,7 @@ happen at program termination:
 ``` V
 greadline.history_file_read(filename)!
 defer {
-    greadline.history_file_write() or {}
+	greadline.history_file_write() or {}
 }
 ```
 
@@ -65,7 +65,23 @@ lines to the library, one at a time.
 Completion
 ----------
 
-TODO
+"Tab completion" can be enabled by providing a completion function.  The
+completion function is passed the word at (or before) the cursor and returns all
+possible completions.
+
+``` V
+greadline.set_completion_fn(fn(word string) []string {
+	return commands.filter(it.starts_with(word))
+})
+```
+
+Completion can also be set back to the default (i.e., filenames) or turned off
+completely.
+
+``` V
+greadline_set_completion_default()
+greadline.set_completion_off()
+```
 
 Multiple Prompts
 ----------------
