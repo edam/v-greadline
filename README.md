@@ -81,19 +81,19 @@ While readline is taking input, you can manipulate the process from another
 thread.
 
 ``` V
-old_pos := point()      // get current cursor position
-set_point(5)            // set cursor position
-insert_text("hi")       // insert text at cursor
-set_point(old_pos)      // restore cursor position
-delete_text(0, 3)       // delete the first 3 chars!
+old_pos := greadline.point()      // get current cursor position
+greadline.set_point(5)            // set cursor position
+greadline.insert_text("hi")       // insert text at cursor
+greadline.set_point(old_pos)      // restore cursor position
+greadline.delete_text(0, 3)       // delete the first 3 chars!
 ```
 
 You can also modify/delete text by reading/write the input line buffer directly.
 
 ``` V
-line := line_buffer()   // get the input line
+line := greadline.line_buffer()   // get the input line
 ul := line.to_upper()
-set_line_buffer(ul)     // set the new input line
+greadline.set_line_buffer(ul)     // set the new input line
 ```
 
 Development
