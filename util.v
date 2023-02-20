@@ -4,6 +4,8 @@
 
 module greadline
 
+import os
+
 struct GlobalState {
 mut:
 	autoadd bool = true // auto-add enabled
@@ -38,26 +40,8 @@ fn check_errno(errno_ int, must_exist bool) ! {
 	if !must_exist && errno_ == 2 {
 		return
 	}
-	msg := match errno_ {
-		1 { 'Not super-user' }
-		5 { 'I/O error' }
-		6 { 'No such device or address' }
-		12 { 'Not enough memory' }
-		13 { 'Permission denied' }
-		16 { 'Mount device busy' }
-		17 { 'File exists' }
-		21 { 'Is a directory' }
-		23 { 'Too many open files in system' }
-		24 { 'Too many open files' }
-		28 { 'No space left on device' }
-		30 { 'Read only file system' }
-		89 { 'No more files' }
-		91 { 'File or path name too long' }
-		137 { 'Filename exists with different case' }
-		else { 'errno_ ${errno_}' }
-	}
 	if errno_ > 0 {
-		return error('failed: ${msg}')
+		return error('failed: ${os.posix_get_error_msg(errno_)}')
 	}
 }
 
