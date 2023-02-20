@@ -19,18 +19,13 @@ Usage
 =====
 
 ``` V
-import greadline
+import edam.greadline
 
 fn main() {
 	text := greadline.readline('Enter text> ') or { return }
 	println("You typed: ${text}")
 }
 ```
-
-GNU readline will initialise with the user's readline init file anyway.  But you
-can also use `greadline.read_init_file(filename)` to read your own readline init
-file, or pass your own init file lines, one at a time, for a more custom
-configuration, with `greadline.parse_and_bind(line)`.
 
 History File
 ------------
@@ -56,6 +51,16 @@ subsequent calls to `history_file_write()` and `history_file_append()`:
 ``` V
 greadline.set_history_file_limit(1000)!
 ```
+
+Initialisation
+--------------
+
+GNU readline will initialise with the user's (or system) readline init file
+anyway.  But in addition you can use `greadline.read_init_file(filename)` to
+read your own readline init file.
+
+Alternatively, use `greadline.parse_and_bind(line)` to pass custom init file
+lines to the library, one at a time.
 
 Completion
 ----------
