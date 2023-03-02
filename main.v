@@ -11,7 +11,11 @@ import math
 // Parse line as if it had been read from the inputrc file and perform any key
 // bindings and variable assignments found.
 pub fn parse_and_bind(line string) ! {
-	ret := C.rl_parse_and_bind(line.str)
+    // GNU readine presumes it can write to the string memory during parsing, so
+    // we must realloc in writable memory.
+    mem := unsafe{ memdup(line.str, line.len + 1) }
+    defer { unsafe{ free(mem) } }
+	ret := C.rl_parse_and_bind(mem)
 	check_error(ret)!
 }
 
