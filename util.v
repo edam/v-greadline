@@ -8,8 +8,8 @@ import os
 
 struct GlobalState {
 mut:
-	auto_add bool = true  // auto-add enabled
-	hf_limit int  = -1    // history file limit
+	auto_add bool = true // auto-add enabled
+	hf_limit int  = -1 // history file limit
 	hf_name  string       // history file name
 	comp_fn  CompletionFn // completion function
 	comp_res []string     // completion results
@@ -72,7 +72,7 @@ fn completion_handler(word &char, next int) &char {
 	}
 }
 
-//type CompHandlerFn = fn (_ &char, _ int) &&char
+// type CompHandlerFn = fn (_ &char, _ int) &&char
 
 fn enable_completion_handler(enable bool) {
 	// TODO: assign to &&CompHandlerFn, not a &&char (this doesn't seem to work
@@ -85,10 +85,10 @@ fn enable_completion_handler(enable bool) {
 	}
 }
 
-type ReadlineCommandFn = fn(int, int) int
+type ReadlineCommandFn = fn (int, int) int
 
 fn wrap_bindable_fn(f CommandFn) ReadlineCommandFn {
-    return fn [f] (count int, key int) int {
-        return if f(count, 0) { 0 } else { 1 }
-    }
+	return fn [f] (count int, key int) int {
+		return if f(count, 0) { 0 } else { 1 }
+	}
 }

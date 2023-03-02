@@ -11,10 +11,12 @@ import math
 // Parse line as if it had been read from the inputrc file and perform any key
 // bindings and variable assignments found.
 pub fn parse_and_bind(line string) ! {
-    // GNU readine presumes it can write to the string memory during parsing, so
-    // we must realloc in writable memory.
-    mem := unsafe{ memdup(line.str, line.len + 1) }
-    defer { unsafe{ free(mem) } }
+	// GNU readine presumes it can write to the string memory during parsing, so
+	// we must realloc in writable memory.
+	mem := unsafe { memdup(line.str, line.len + 1) }
+	defer {
+		unsafe { free(mem) }
+	}
 	ret := C.rl_parse_and_bind(mem)
 	check_error(ret)!
 }
@@ -26,14 +28,14 @@ pub fn read_init_file(filename string) ! {
 }
 
 type Key = int
-type CommandFn = fn(int, Key) bool
+type CommandFn = fn (int, Key) bool
 
 // Add a custom, named, bindable function.  The function can be bound to a key
 // with parse_and_bind(), e.g.: parse_and_bind('Control-x: my-foo-func').  See
 // the GNU readline manual (search for "Key Bindings") for key names.
 // https://tiswww.case.edu/php/chet/readline/readline.html#Readline-Init-File-Syntax
 pub fn add_bindable_fn(name string, custom_fn CommandFn) {
-    C.rl_add_funmap_entry(name.str, wrap_bindable_fn(custom_fn))
+	C.rl_add_funmap_entry(name.str, wrap_bindable_fn(custom_fn))
 }
 
 // Line buffer
@@ -105,18 +107,18 @@ pub fn set_point(pos int) {
 
 // Get mark position.  If set, the text between point and mark is a selection.
 pub fn mark() ?int {
-    return if C.rl_mark_active_p() != 0 { C.rl_mark } else { none }
+	return if C.rl_mark_active_p() != 0 { C.rl_mark } else { none }
 }
 
 // Set mark position, and therefore set a text selection.
 pub fn set_mark(pos int) {
-    C.rl_mark = math.max(0, math.min( C.rl_end, pos ))
-    C.rl_activate_mark()
+	C.rl_mark = math.max(0, math.min(C.rl_end, pos))
+	C.rl_activate_mark()
 }
 
 // Unset mark, and therefore unselect any selected text.
 pub fn clear_mark() {
-    C.rl_deactivate_mark()
+	C.rl_deactivate_mark()
 }
 
 // History File Management
