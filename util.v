@@ -8,10 +8,10 @@ import os
 
 struct GlobalState {
 mut:
-	auto_add bool = true // auto-add enabled
-	hf_limit int  = -1 // history file limit
+	auto_add bool = true  // auto-add enabled
+	hf_limit int  = -1    // history file limit
 	hf_name  string       // history file name
-	comp_fn  CompletionFn = unsafe { nil } // completion function
+	comp_fn  CompletionFn // completion function
 	comp_res []string     // completion results
 }
 
@@ -83,4 +83,12 @@ fn enable_completion_handler(enable bool) {
 	unsafe {
 		*cvarptr = if enable { &char(&completion_handler) } else { C.NULL }
 	}
+}
+
+type ReadlineCommandFn = fn(int, int) int
+
+fn wrap_bindable_fn(f CommandFn) ReadlineCommandFn {
+    return fn [f] (count int, key int) int {
+        return if f(count, 0) { 0 } else { 1 }
+    }
 }

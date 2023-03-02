@@ -25,6 +25,17 @@ pub fn read_init_file(filename string) ! {
 	check_errno(ret, true)!
 }
 
+type Key = int
+type CommandFn = fn(int, Key) bool
+
+// Add a custom, named, bindable function.  The function can be bound to a key
+// with parse_and_bind(), e.g.: parse_and_bind('Control-x: my-foo-func').  See
+// the GNU readline manual (search for "Key Bindings") for key names.
+// https://tiswww.case.edu/php/chet/readline/readline.html#Readline-Init-File-Syntax
+pub fn add_bindable_fn(name string, custom_fn CommandFn) {
+    C.rl_add_funmap_entry(name.str, wrap_bindable_fn(custom_fn))
+}
+
 // Line buffer
 
 // Emit prompt, then read and return user input.  Where EOF is encountered, none
@@ -92,21 +103,21 @@ pub fn set_point(pos int) {
 	C.rl_point = math.max(0, math.min(C.rl_end, pos))
 }
 
-//// Get mark position.  If set, the text between point and mark is a selection.
-// pub fn mark() ?int {
-//    return if C.rl_mark_active_p() != 0 { C.rl_mark } else { none }
-//}
+// Get mark position.  If set, the text between point and mark is a selection.
+pub fn mark() ?int {
+    return if C.rl_mark_active_p() != 0 { C.rl_mark } else { none }
+}
 
-//// Set mark position, and therefore set a text selection.
-// pub fn set_mark(pos int) {
-//    C.rl_mark = math.max(0, math.min( C.rl_end, pos ))
-//    C.rl_activate_mark()
-//}
+// Set mark position, and therefore set a text selection.
+pub fn set_mark(pos int) {
+    C.rl_mark = math.max(0, math.min( C.rl_end, pos ))
+    C.rl_activate_mark()
+}
 
-//// Unset mark, and therefore unselect any selected text.
-// pub fn clear_mark() {
-//    C.rl_deactivate_mark()
-//}
+// Unset mark, and therefore unselect any selected text.
+pub fn clear_mark() {
+    C.rl_deactivate_mark()
+}
 
 // History File Management
 

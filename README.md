@@ -93,24 +93,49 @@ TODO
 Manipulating Line Buffer
 ------------------------
 
-While readline is taking input, you can manipulate the process from another
-thread.
+In addition to the builtin functions, you can add your own named functions to
+readline and set key bindings for them, so that the user can trigger them while
+entering text.
 
 ``` V
-old_pos := greadline.point()      // get current cursor position
-greadline.set_point(5)            // set cursor position
-greadline.insert_text("hi")       // insert text at cursor
-greadline.set_point(old_pos)      // restore cursor position
-greadline.delete_text(0, 3)       // delete the first 3 chars!
+greadline.add_bindable_fn('star-first-chars', star_first_n_chars)
+greadline.parse_and_bind('Control-g: star-first-chars') or { println("ERROR") }
 ```
 
-You can also modify/delete text by reading/write the input line buffer directly.
+In your bindable function, you can then modify the line input buffer in various
+ways.
 
 ``` V
-line := greadline.line_buffer()   // get the input line
-ul := line.to_upper()
-greadline.set_line_buffer(ul)     // set the new input line
+pos := greadline.point()              // get current cursor position
+greadline.set_point(5)                // set cursor position
+greadline.insert_text("hi")           // insert 2 chars at the cursor
+greadline.delete_text(5, 7)           // delete 2 chars at buffer offset 5
+length := greadline.length()          // get input text length
+mark := greadline.mark() or { -1 }    // get mark (selection offset) if set
+greadline.set_mark(0)                 // set mark (selection) to offset 0
+greadline.clear_mark()                // clear mark (unselect)
 ```
+
+Or you can modify the whole input line buffer in one go and readine will try to
+preserve point (the cursor position).  Here is the function we added above...
+
+``` V
+fn star_first_n_chars(count int, _ greadline.Key) bool {
+	line := greadline.line_buffer()   // get the input line
+	count_ := math.min(line.len, math.max(0, count))
+	line_ := '*'.repeat(count_) + line[count_..line.len]
+	greadline.set_line_buffer(line_)  // set the new input line
+	return true // no error
+}
+```
+
+Notes on bindable functions:
+* `count` is a an argument that the user can pass to the function while editing
+  the line (like in Emacs) and it defaults to 1.  It is typically used as a
+  "repeat count".
+* The second argument (type `Key`) should not be used. (It will be added in the
+  future, but the definition of `Key` will change.)
+* Returns false on error.
 
 Development
 ===========
