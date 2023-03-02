@@ -13,11 +13,11 @@ import math
 pub fn parse_and_bind(line string) ! {
 	// GNU readine presumes it can write to the string memory during parsing, so
 	// we must realloc in writable memory.
-	mem := unsafe { memdup(line.str, line.len + 1) }
+	line_ := unsafe { memdup(line.str, line.len + 1) }
 	defer {
-		unsafe { free(mem) }
+		unsafe { free(line_) }
 	}
-	ret := C.rl_parse_and_bind(mem)
+	ret := C.rl_parse_and_bind(line_)
 	check_error(ret)!
 }
 
