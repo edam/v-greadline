@@ -1,5 +1,5 @@
 greadline
-============
+=========
 
 A module for the [V programming language] which facilitates the use of the
 [GNU Readline library] via a more simple interface.  (The interface is loosely
@@ -65,9 +65,9 @@ lines to the library, one at a time.
 Completion
 ----------
 
-"Tab completion" can be enabled by providing a completion function.  The
-completion function is passed the word at (or before) the cursor and returns all
-possible completions.
+"Tab completion" can be controlled by providing a completion function.  The
+completion function is passed the word at (or before) the cursor and must
+returns all possible completions.
 
 ``` V
 greadline.set_completion_fn(fn(word string) []string {
@@ -99,7 +99,7 @@ entering text.
 
 ``` V
 greadline.add_bindable_fn('star-first-chars', star_first_n_chars)
-greadline.parse_and_bind('Control-g: star-first-chars') or { println("ERROR") }
+greadline.parse_and_bind('Control-g: star-first-chars')!
 ```
 
 In your bindable function, you can then modify the line input buffer in various
@@ -122,7 +122,7 @@ preserve point (the cursor position).  Here is the function we added above...
 ``` V
 fn star_first_n_chars(count int, _ greadline.Key) bool {
 	line := greadline.line_buffer()   // get the input line
-	count_ := math.min(line.len, math.max(0, count))
+	count_ := math.min(math.max(count, 0), line.len)
 	line_ := '*'.repeat(count_) + line[count_..line.len]
 	greadline.set_line_buffer(line_)  // set the new input line
 	return true // no error
@@ -145,6 +145,13 @@ Testing the module
 ``` shell
 $ v test .
 ```
+
+Changes
+-------
+
+0.1 Initial verison
+0.2 Support more of API, bug fixes, API consistency, more tests
+0.3 Added completion and custom bindable functions, bug fixes
 
 Licence
 -------
