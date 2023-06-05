@@ -22,8 +22,8 @@ Usage
 import edam.greadline
 
 fn main() {
-	text := greadline.readline('Enter text> ') or { return }
-	println("You typed: ${text}")
+    text := greadline.readline('Enter text> ') or { return }
+    println("You typed: ${text}")
 }
 ```
 
@@ -37,7 +37,7 @@ happen at program termination:
 ``` V
 greadline.history_file_read(filename)!
 defer {
-	greadline.history_file_write() or {}
+    greadline.history_file_write() or {}
 }
 ```
 
@@ -71,7 +71,7 @@ returns all possible completions.
 
 ``` V
 greadline.set_completion_fn(fn(word string) []string {
-	return commands.filter(it.starts_with(word))
+    return commands.filter(it.starts_with(word))
 })
 ```
 
@@ -121,11 +121,11 @@ preserve point (the cursor position).  Here is the function we added above...
 
 ``` V
 fn star_first_n_chars(count int, _ greadline.Key) bool {
-	line := greadline.line_buffer()   // get the input line
-	count_ := math.min(math.max(count, 0), line.len)
-	line_ := '*'.repeat(count_) + line[count_..line.len]
-	greadline.set_line_buffer(line_)  // set the new input line
-	return true // no error
+    line := greadline.line_buffer()   // get the input line
+    count_ := math.min(math.max(count, 0), line.len)
+    line_ := '*'.repeat(count_) + line[count_..line.len]
+    greadline.set_line_buffer(line_)  // set the new input line
+    return true // no error
 }
 ```
 
@@ -150,8 +150,11 @@ Changes
 -------
 
 0.1 Initial verison
+
 0.2 Support more of API, bug fixes, API consistency, more tests
+
 0.3 Added completion and custom bindable functions, bug fixes
+
 0.4 Fixed file name
 
 Licence
