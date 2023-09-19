@@ -66,8 +66,8 @@ Completion
 ----------
 
 "Tab completion" can be controlled by providing a completion function.  The
-completion function is passed the word at (or before) the cursor and must
-returns all possible completions.
+completion function is passed the word at (or before) the cursor and returns all
+possible completions.
 
 ``` V
 greadline.set_completion_fn(fn(word string) []string {
@@ -79,7 +79,7 @@ Completion can also be set back to the default (i.e., filenames) or turned off
 completely.
 
 ``` V
-greadline_set_completion_default()
+greadline.set_completion_default()
 greadline.set_completion_off()
 ```
 
@@ -93,9 +93,9 @@ TODO
 Manipulating Line Buffer
 ------------------------
 
-In addition to the builtin functions, you can add your own named functions to
-readline and set key bindings for them, so that the user can trigger them while
-entering text.
+In addition to the builtin named functions in GNU readline (available via key
+bindings), you can add your own named functions and set key bindings for them,
+so that the user can trigger them while entering text.
 
 ``` V
 greadline.add_bindable_fn('star-first-chars', star_first_n_chars)
