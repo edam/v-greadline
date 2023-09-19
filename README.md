@@ -149,13 +149,13 @@ $ v test .
 Changes
 -------
 
-0.1 Initial verison
+0.1 - Initial verison
 
-0.2 Support more of API, bug fixes, API consistency, more tests
+0.2 - Support more of API, bug fixes, API consistency, more tests
 
-0.3 Added completion and custom bindable functions, bug fixes
+0.3 - Added completion and custom bindable functions, bug fixes
 
-0.4 Fixed file name
+0.4 - Fixed file name
 
 Licence
 -------
