@@ -5,6 +5,7 @@
 module greadline
 
 import math
+import os
 
 // Binding keys
 
@@ -148,6 +149,10 @@ pub fn history_file_append(nelements int) ! {
 		retain := math.max(0, state.hf_limit - C.history_length)
 		append := math.min(C.history_length, state.hf_limit)
 		apply_file_limit(retain)!
+		if !os.exists(state.hf_name) {
+			mut f := os.create(state.hf_name)!
+			f.close()
+		}
 		ret := C.append_history(append, state.hf_name.str)
 		check_errno(ret, true)!
 	} else {
@@ -250,6 +255,6 @@ pub fn set_completion_default() {
 // Turn off completion altogether.
 pub fn set_completion_off() {
 	mut state := unsafe { global_state() }
-	state.comp_fn = unsafe { nil }
+	state.comp_fn = none
 	enable_completion_handler(true)
 }

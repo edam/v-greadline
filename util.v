@@ -10,12 +10,12 @@ struct GlobalState {
 mut:
 	auto_add bool = true // auto-add enabled
 	hf_limit int  = -1 // history file limit
-	hf_name  string       // history file name
-	comp_fn  CompletionFn // completion function
-	comp_res []string     // completion results
+	hf_name  string        // history file name
+	comp_fn  ?CompletionFn // completion function
+	comp_res []string      // completion results
 }
 
-[unsafe]
+@[unsafe]
 fn global_state() &GlobalState {
 	unsafe {
 		mut static state := nil
@@ -57,8 +57,8 @@ fn completion_handler(word &char, next int) &char {
 	mut state := unsafe { global_state() }
 	if next == 0 {
 		state.comp_res.clear()
-		if state.comp_fn != unsafe { nil } {
-			state.comp_res << state.comp_fn(unsafe { cstring_to_vstring(word) })
+		if comp_fn := state.comp_fn {
+			state.comp_res << comp_fn(unsafe { cstring_to_vstring(word) })
 			state.comp_res.reverse_in_place()
 		}
 	}
