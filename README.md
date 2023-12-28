@@ -6,7 +6,7 @@ A module for the [V programming language] which facilitates the use of the
 based on the Python GNU readline interface, although the functions in this
 module are named more clearly.)
 
-Version 0.4
+Version 0.5
 
 Installation
 ------------
@@ -156,6 +156,8 @@ Changes
 0.3 - Added completion and custom bindable functions, bug fixes
 
 0.4 - Fixed file name
+
+0.5 - Fixed warnings
 
 Licence
 -------
